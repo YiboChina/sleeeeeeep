@@ -430,6 +430,101 @@ for fruit,number in zip(fruits,numbers):
 #ten apples
 #twenty oranges
 ```
+##### 字符串
+1. 操作
+```python
+string.lower() #全部转换为小写
+string.upper() #全部转换为大写
+string.split(sep=None) #将string字符串按照分隔符sep分隔，结果为列表类型
+    e.g: s='ChenYibo@qq.com'
+         a=s.split(sep='@')
+         print(a) #['ChenYibo', 'qq.com'],a[0]=ChenYibo
+string.count(sub) #统计sub字符串出现的次数
+string.find(sub) #查询sub字符串是否存在，不存在结果为-1，存在返回首次出现的索引
+string.index(sub) #与find相同，但不存在程序报错
+string.startswith(s) #查询字符串是否以子串s开头
+string.endswith(s) #是否以s结尾 
+string.replace(old,new,替换次数) #使用new替换字符串中所有的old字符串
+string.center(width,fillchar) #字符串在指定的宽度范围内居中，可以使用fillchar填充
+string.join(iter) #将string插入到iter的每个字符之间
+string.strip(chars) #从字符串中去掉左侧和右侧chars中列出的字符串，与chars顺序无关,只要包含就去掉
+s.strip() #去除左右空格
+string.lstrip(chars) #去掉左侧chars
+string.rstrip(chars) #去掉右侧chars
+```
+2. 格式化字符串
+```python
+1.%占位
+name='Li Ming' #一般字符串和整数等不能直接连接，需要用%占位符
+age=18
+score=99.9
+print('年龄：%s，年龄：%d，成绩：%.1f' % (name,age,score)) # %1.f可以控制保留几位小数
+2.f-string
+print(f'姓名：{name}，年龄{age}，成绩{score}')
+3.（.format）方法
+print('姓名：{0}，年龄：{1}，成绩：{2}'.format(name,age,score))
+————————————————————————————————————————————————————————————————————————————————————
+{序号:填充 对齐方式 宽度 , .精度 类型}
+:引导符
+填充：用于填充单个字符
+对齐方式：<左对齐，>右对齐，^居中对齐
+宽度：字符串输出宽度
+,：数字的千位分隔符，只适用于整数和浮点数
+.精度：浮点数小数部分精度或字符串最大输出长度
+类型：整数类型：b二进制、d十进制、o八进制、x（X）十六进制
+      浮点数类型：e（E）、f、%
+s='helloworld'
+print('输出：{0:·^20}'.format(s)) #输出：·····helloworld·····
+a=987654321.98237643
+print('输出：{0:,}'.format(a)) #输出：987,654,321.9823765
+print('输出：{0:.2f}   {1:.2}'.format(a,s)) #输出：987654321.98   he
+num=123
+print('输出：{0:b},{0:d},{0:o},{0:x}'.format(num)) #输出：1111011,123,173,7b
+floatnum=13.14521111111
+print('输出：{0:.2f},{0:.2e},{0:.3%}'.format(floatnum)) #输出：13.15,1.31e+01,1314.521%
+```
+3. 字符串拼接
+```python
+1.+加号
+2.str.join()
+print(''.join(['hello','world'])) #helloworld
+print('&&'.join(['a','b','c','d'])) #a&&b&&c&&d
+3.直接拼接
+print('hello''world') #helloworld
+4.格式化字符串拼接
+s1='good'
+s2='luck'
+print('{0}{1}'.format(s1,s2)) #goodluck
+print(f'{s1}{s2}') #goodluck
+print('%s%s'%(s1,s2)) #goodluck
+```
+##### 编码解码
+```python
+编码string.encode(encoding='utf-8',errors='strict/ignore/replace')
+解码string.decode(encoding='utf-8',errors='strict/ignore/replace') #编码和解码需要用相同的encoding
+s='中国梦'
+encodes=s.encode('utf-8','strict')
+print(encodes) #b'\xe4\xb8\xad\xe5\x9b\xbd\xe6\xa2\xa6'
+decodes=encodes.decode('utf-8','strict')
+print(decodes) #中国梦
+print(b'\xe4\xb8\xad\xe5\x9b\xbd\xe6\xa2\xa6'.decode('utf-8',errors='strict')) #中国梦
+```
+##### 数据的验证
+```python
+str.isdigit() #所有字符都是十进制的阿拉伯数字
+str.isnumeric() #所有字符都是数字，可以是一，二、壹，贰，罗马数字等，0b1010二进制不行
+str.isalpha() #所有字符都是字母（包括中文字符）
+str.isalnum() #所有字符都是数字或字母，包括中文字符
+str.islower() #都是小写
+str.isupper() #都是大写，中文既是大写又是小写
+str.istitle() #所有字符都首字母大写 "Hello"：True，"HelloWorld"：Wrong，"Hello World"：True
+str.isspace() #所有字符都是空白字符（\n,\t,' '等）
+```
+
+
+
+
+
 
 
 
