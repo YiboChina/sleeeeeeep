@@ -6,13 +6,17 @@ e.g:   ```print(chr(97))```
 e.g:   ```print(ord('北')) ```
 3. 强制类型转换
 ```py
-num=int(num) #强制类型转换为整形
+num=int(num) #强制类型转换为整形,小数直接去掉
 float(x) #转换为浮点型
 str(x) #转换为字符串
 bool(x) #转换为bool型
 hex(x) #将整数转换为十六进制
 oct(x) #将整数转换为八进制
 bin(x) #将整数转换为二进制
+bool(x) #获取指定对象的bool值
+list(sequence) #将序列转化成列表类型
+tuple(sequence) #将序列转化为元组类型
+set(sequence) #将序列转化为集合类型 
 ```
 4. len()函数，求长度
 e.g:   ```print(len(keyword.kwlist)) ```
@@ -40,6 +44,17 @@ e.g:   ```print(round(0.2+0.1,1)) ```
     ``` 
     3. ```eval('print("dddd")')```相当于直接执行print操作
 10. range函数,产生一个[n,m)的整数序列，不包括m
+11. 数学函数
+```python
+abs(x) #绝对值
+divmod(x,y) #获取x与y的商和余数
+max(sequence) #sequence中的最大值
+min(sequence) #sequence中的最小值
+sum(iter) #对可迭代对象进行求和运算,可以直接放入一个列表等    
+pow(x,y) #获取x的y次幂
+round(x,d) #x保留d位小数,结果四舍五入,只有一个参数为保留整数,四舍五入,第二个参数为-1对个位四舍五入等
+```
+
 ```python
 for i in range(1,11):
 print(i)
@@ -498,6 +513,27 @@ print('{0}{1}'.format(s1,s2)) #goodluck
 print(f'{s1}{s2}') #goodluck
 print('%s%s'%(s1,s2)) #goodluck
 ```
+4. 字符串去重
+```python
+s='aaabbbcccddd'
+s_new1=''
+for item in s:
+    if item not in s_new1:
+        s_new1+=item
+print(s_new1) #abcd
+
+s_new2=''
+for i in range(len(s)):
+    if s[i] not in s_new2:
+        s_new2+=s[i]
+print(s_new2) #abcd
+
+s_new3=set(s)
+print(s_new3) #{'c', 'a', 'b', 'd'}
+list3=list(s_new3)
+list3.sort(key=s.index)
+print(''.join(list3)) #abcd
+```
 ##### 编码解码
 ```python
 编码string.encode(encoding='utf-8',errors='strict/ignore/replace')
@@ -518,8 +554,265 @@ str.isalnum() #所有字符都是数字或字母，包括中文字符
 str.islower() #都是小写
 str.isupper() #都是大写，中文既是大写又是小写
 str.istitle() #所有字符都首字母大写 "Hello"：True，"HelloWorld"：Wrong，"Hello World"：True
-str.isspace() #所有字符都是空白字符（\n,\t,' '等）
+str.isspace() #所有字符都是空白字符(\n,\t,' '等)
 ```
+##### 正则表达式
+1. 元字符
+具有特殊意义的专用字符，例如"^"和"$"分别表示匹配的开始和结束
+
+| 元字符 |           说明           |    example    |          result           |
+| :----: | :----------------------: | :-----------: | :-----------------------: |
+|   .    |   匹配任意字符（除\n）   | 'p\nytho\tn'  |   p、y、t、h、o、\t、n    |
+|   \w   |  匹配字母、数字、下划线  | 'python\n123' | p、y、t、h、o、n、1、2、3 |
+|   \W   | 匹配非字母、数字、下划线 | 'python\n123' |            \n             |
+|   \s   |     匹配任意空白字符     | 'python\t123' |            \t             |
+|   \S   |    匹配任意非空白字符    | 'python\t123' | p、y、t、h、o、n、1、2、3 |
+|   \d   |     匹配任意十进制数     | 'python\t123' |          1、2、3          |
+2. 限定符
+用于限定匹配次数
+
+| 限定符 |              说明              |   example   |                result                |
+| :----: | :----------------------------: | :---------: | :----------------------------------: |
+|   ?    |     匹配前面的字符0次或1次     |   colou?r   |        可以匹配color或colour         |
+|   +    |    匹配前面的字符1次或多次     |   colou+r   |      可以匹配colour或colouu...r      |
+|   *    |    匹配前面的字符0次或多次     |   colou*r   |      可以匹配color或colouu...r       |
+|  {n}   |       匹配前面的字符n次        |  colou{2}r  |           可以匹配colouur            |
+|  {n,}  |     匹配前面的字符最少n次      | colou{2,}r  |     可以匹配colouur或colouuu...r     |
+| {n,m}  | 匹配前面的字符最小n次，最多m次 | colou{2,4}r | 可以匹配colouur或colouuur或colouuuur |
+3. 其他字符
+
+|  其他字符  |         说明         |  example   |             result             |
+| :--------: | :------------------: | :--------: | :----------------------------: |
+| 区间字符[] | 匹配[]中所指定的字符 | [.?!][0-9] | [匹配标点符号点、问号、感叹号][匹配0、1、2、3、4……9]|
+|排除字符^|匹配不在[]中指定的字符|[^0-9]|匹配除0-9的字符|
+|选择字符\||用于匹配 \| 左右的任意字符|\d{18}\|\d{15}|匹配十五位或十八位身份证|
+|转义字符|同python中的转义字符|\ .|将.作为普通字符使用|
+|[\u4e00-\u9fa5]|匹配任意一个汉字|||
+|分组()|改变限定符的作用|six\|fourth和(six\|four)th|匹配six,fourth和匹配sixth,fourth|
+##### re模块
+内置模块，用于实现python中的正则表达操作
+```python
+re.match(pattern,string,flags=0) #用于从字符串的开始位置进行匹配，如果起始位置匹配成功结果为Match对象，否则为None
+re.search(pattern,string,flags=0) #用于在整个字符串中搜索第一个匹配的值，如果匹配成功，结果为Match对象，否则为None
+re.findall(pattern,string,flags=0) #用于在整个字符串中搜索所有符合正则表达式的值，结果为列表
+re.sub(pattern,repl,string,count,flags=0) #用于实现对字符串中指定子串的替换,string为子字符串，repl为新的字符串
+re.split(pattern,string,maxsplit,flags=0) #与字符串中的split功能相同，分隔字符串，maxsplit为分割线的数量
+import re
+pattern='\d\.\d+' #模式字符串
+s='123.3456 python 1.32'
+match=re.match(pattern,s,re.I) #re.I为忽略大小写
+print(match) #None
+search=re.search(pattern,s,flags=0)
+print(search) #<re.Match object; span=(2, 8), match='3.3456'>
+print('start:',search.start())
+print('end:',search.end())
+print('区间:',search.span())
+print('待匹配字符串:',search.string)
+print('匹配数据:',search.group()) #输出匹配的内容,不会输出<re......>
+"""
+start: 2
+end: 8
+区间: (2, 8)
+待匹配字符串: 123.3456 python 1.32
+匹配数据: 3.3456
+"""
+findall=re.findall(pattern,s,flags=0)
+print(findall) #['3.3456', '1.32']
+sub=re.sub(pattern,'00000',s,flags=0)
+print(sub) #1200000 python 00000
+split=re.split(pattern,s,1,flags=0)
+print(split) #['12', ' python 1.32']
+``` 
+##### 异常处理
+```python
+try :
+    可能会异常的代码
+except 异常类型A:
+    异常处理代码(报错后执行的代码)
+except 异常类型B:
+    异常处理代码(报错后执行的代码)
+e.g:
+try:
+    a=float(input('第一个数'))
+    b=float(input('第二个数'))
+    print(a/b)
+except ZeroDivisionError:
+    print('除数为零')
+except ValueError:
+    print('请输入整数')
+except BaseException:
+    print('未知异常')
+————————————————————————————
+try:
+    可能异常的代码
+except 异常类型:
+    异常处理代码(报错后执行的代码)
+else:
+    没有异常要执行的代码
+finally:
+    无论是否产生异常都要执行的代码 #例:print('程序执行结束')
+————————————————————————————
+raise [Exception类型(异常描述信息)]
+e.g:
+try:
+    gender=input('请输入您的性别')
+    if gender!='男' and gender!='女':
+        raise Exception('性别只能是男或女')
+    else:
+        print(gender)
+except Exception as e:
+    print(e)
+—————————————————————————————
+常见的异常类型
+ZeroDivisionError 除数为零
+IndexError 索引超出范围
+KeyError 字典取值时key不存在
+NameError 使用一个没有声明的变量
+SyntaxError Python中的语法错误
+ValueError 传入的值错误
+AttributeError 属性或方法不存在的异常
+TypeError 类型不合适
+IndentationError 不正确的缩进
+```
+##### 函数
+1. 定义
+```python
+def 函数名称(参数列表):
+    函数体
+    return 返回值列表 #可以没有
+```
+2. 传参
+    1. 位置传参:位置个数均相等
+    2. 关键字传参:在函数调用时对实参进行赋值,但在进行参数传递时要求名称必须与函数定义的形参名称相同
+       def happy_birthday(name,age)
+       happy_birthday(age=18,name='陈'),顺序可以不一样
+    3. 既有位置传参又有关键字传参时,位置传参在前,关键字传参在后
+    4. 形参中既有默认值参数又有位置参数，默认值参数放最后
+3. 可变参数
+    1. 个数可变的位置参数
+        在参数前加一个*，函数调用时可接收任意个数的实际参数，并放到一个元组中
+        ```python
+        def fun(*para):
+            print(type(para)) #<class 'tuple'>
+            for item in para:
+                print(item)
+        fun(10,20,30,40)
+        fun(*[10,20,30,40]) #在调用时，参数前加一颗星，可以将调用的列表解包
+        ```
+
+    2. 个数可变的关键字参数
+        在参数前加两个*，在函数调用时可接收任意多个“参数=值”形式的参数，并放到一个字典中
+        ```python
+        def fun2(**para):
+            print(type(para)) #<class 'dict'>
+            for keys,items in para.items()
+            print(keys,'::::',items)
+        fun2(name='Jason',age=18,Idcard=20230510)
+        """
+        name :::: Jason
+        age :::: 18
+        Idcard :::: 20230510
+        """
+        d={'name':'Jason','age':18}
+        fun2(**d) #不可以直接传一个字典，但可以用**将字典解包
+        ```
+4. return多个返回值
+```python
+def allsum(num):
+    sum=0
+    odd_sum=0
+    even_sum=0
+    for i in range(1,num+1):
+        if i%2==0:
+            even_sum+=i
+        else:
+            odd_sum+=i
+        sum+=i
+    return sum,odd_sum,even_sum
+print(type(allsum(10))) #<class 'tuple'>
+print(allsum(10)) #(55, 25, 30)
+a,b,c=allsum(10) 
+print(a,b,c) #55 25 30 解包赋值
+```
+5. 全局变量
+    函数外部定义的变量或函数内部用global修饰的变量
+    global全局变量的声明和赋值必须分开进行
+6. 匿名函数
+只能使用一次，一般在函数体只有一句或一个返回值时使用
+```python
+result=lambda 参数列表:表达式
+e.g:
+1.
+s=lambda a,b: a+b
+print(s(10,20))
+2.
+lst=[10,20,30,40]
+for item in range(1,len(lst)+1):
+    result=lambda a:lst[a-1]
+    print(result(item)) #与for循环遍历一样
+3.
+grade=[{'name':'LiMing','score':95},{'name':'Jack','score':98},{''name':'Mike','score':87},{'name':'Jone','score':93}]
+grade.sort(key=lambda x: x.get('score'))
+print(grade) #[{'name': 'Mike', 'score': 87}, {'name': 'Jone', 'score': 93}, {'name': 'LiMing', 'score': 95}, {'name': 'Jack', 'score': 98}] 
+```
+7. 递归函数
+```python
+def fac(n):
+    result=1
+    if n>1: 
+        return n*fac(n-1)
+    else:
+        return 1
+print(fac(3))   
+```
+##### 迭代器函数
+```python
+lst=[12,34,57,32,78,37]
+1.sorted(iter) #对可迭代对象进行排序
+    sort_lst=sorted(lst) #[12, 32, 34, 37, 57, 78]
+2.reversed(sequence) #反转序列生成新的迭代器对象
+    reversed_lst=reversed(lst)
+    print(type(reversed_lst)) #<class 'list_reverseiterator'>
+    print(list(reversed_lst)) #[37, 78, 32, 57, 34, 12]
+3.zip(iter1,iter2) #将iter1与iter2打包成元组并返回一个可迭代的zip对象
+    e.g:[('a',10),('b',20),('c',30)]
+4.enumerate(iter) #根据iter对象创建一个enumerate对象
+    enum=enumerate(lst,start=1)
+    print(type(enum)) #<class 'enumerate'>
+    print(list(enum)) #[(1, 12), (2, 34), (3, 57), (4, 32), (5, 78), (6, 37)]
+5.all(iter) #判断可迭代对象中所有的元素的bool值是否都为True
+    print(all(lst)) #True
+6.any(iter) #判断可迭代对象中所有的元素的bool值是否有一个为True
+7.next(iter) #获取迭代器的下一个元素 
+    reversed_lst=reversed(lst)
+    print(next(reversed_lst)) #37
+    print(next(reversed_lst)) #78
+8.filter(function,iter) #通过指定条件过滤序列并返回一个迭代器对象
+    def fun(num):
+        return num%2==0
+    lst1=filter(fun,lst)
+    print(list(lst1)) #[12, 34, 32, 78]
+9.map(function,iter) #通过函数function对可迭代对象操作返回一个迭代器对象
+    lst2=['hello','hi','good']
+    def fun(str):
+        return str.upper()
+    lst3=map(fun,lst2)
+    print(list(lst3)) #['HELLO', 'HI', 'GOOD']
+```
+
+
+
+
+
+
+        
+        
+
+
+
+
+
+
 
 
 
