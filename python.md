@@ -54,11 +54,14 @@ sum(iter) #对可迭代对象进行求和运算,可以直接放入一个列表�
 pow(x,y) #获取x的y次幂
 round(x,d) #x保留d位小数,结果四舍五入,只有一个参数为保留整数,四舍五入,第二个参数为-1对个位四舍五入等
 ```
-
+12. format函数
 ```python
-for i in range(1,11):
-print(i)
+format(value,format_spec) #将value以format——spec格式显示
+print(format(3.14,'20')) #                3.14默认右对齐
+print(format('hello','20')) #hello            默认左对齐
+print(format('hello','#>20')) ################hello
 ```
+
 ##### print函数
 ```py
 print(value,...,sep=' ',end='\n',file=none)
@@ -156,7 +159,7 @@ elif num==123455:
     print('50元')
 else:
     print('not found 404')
-# 或者
+# 或者三目运算符
 print('恭喜中奖'if num=678934 else'404')
 ```
 ##### match语句
@@ -799,28 +802,323 @@ lst=[12,34,57,32,78,37]
     lst3=map(fun,lst2)
     print(list(lst3)) #['HELLO', 'HI', 'GOOD']
 ```
+##### 类
+1.创建
+```python
+class Student(): #创建一个类，首字母必须大写
+    #类属性定义在类中，方法外的变量
+    school='ChongQing University'
+
+    #初始化方法 
+    def __init__(self,name,age,id):#name和age是方法的参数，局部变量作用于是__init__方法
+        self.name=name
+        self.age=age
+        self.id=id
+    #定义在类中函数为方法，自带参数self
+    def show(self):
+        print(f'my name is {self.name},my age is{self.age},my id is {self.id}')
+    #静态方法
+    @staticmethod
+    def sm(): 
+        print('这是一个静态方法，不能调用实例属性和实例方法')
+    @classmethod
+    def cm(cls):
+        print('这是一个类方法，不能调用实例属性和实例方法')
+stu=Student('Jason',18,'20230510') #创建一个类的对象
+stu1=Student
+print(stu.school) #ChongQing University
+print(stu.age) #18
+stu.show() #my name is Jason,my age is18,my id is 20230510
+Student.sm() #这是一个静态方法，不能调用实例属性和实例方法
+stu.school='BeiJing U'
+print(stu.school) #BeiJing U
+print(Student.school) #ChongQing University
+stu.age=19
+print(stu.age) #19
+```
+2. 动态绑定
+```python
+1.动态绑定属性
+stu2.gender='男' #独属于2的属性
+print(stu2.gender)
+print(stu1.gender)
+2.动态绑定方法
+def gohome():
+    print('I want to go home')
+stu2.wenthome=gohome
+stu2.wenthome() #I want to go home
+```
+3. 封装
+```python
+class Student:
+    #首位双下划线
+    def __init__(self,name,age,gender):
+        self._name=name #单下划线_name受保护的只能本类和子类访问
+        self.__age=age #双下划线__age私有，只能类本身访问
+        self.gender=gender
+    def _fun1():
+        print('受保护，只有类本身和子类去使用')
+    def __fun2():
+        print('私有，只有类本身可以使用')
+    def fun(self):
+        self._fun1()
+        self.__fun2()
+        print(self.__age)
+stu=Student('LM',18,'M')
+#也可以访问私有形式
+print(stu._Student__age)
+print(dir(Student)) #给出所有属性和方法如_Student__fun2
+```
+4. 继承
+```python
+class Person:
+    def __init__(self,name,age):
+        self.name=name
+        self.age=age
+    def show(self):
+        print(f'My name is {self.name}, I am {self.age} years old')
+class Student(Person):
+    def __init__(self, name, age,id):
+        super().__init__(name, age) #继承Person中name和age的定义
+        self.id=id
+#多继承调用父类的属性方法
+FatherA.__init__(self,name)
+FatherB.__init__(self,age) #不用super().__init__了
+#子类可以重写父类中的方法，可以通过super().xxx()调用父类中被重写的方法
+print(stu) #直接输出对象名，调用__str__方法，返回对象的地址，也可以重写此方法
+```
+5. 特殊属性
+```python
+obj.__dict__ #返回对象的属性字典
+obj.__class__ #返回对象所属的类
+class.__bases__ #返回类的父类元组 
+class.__base__ #返回类的父类
+class.__mro__ #返回类的层次结构
+class.__subclasses__() #返回类的子类列表
+```
+6. 类对象拷贝
+```python
+1.赋值‘=’
+只是形成两个变量，实际上还是指向一个对象，一个内存地址
+2.浅拷贝
+import copy
+obj2=copy.copy(obj)
+对象会被拷贝但是子对象不会被拷贝，引用同一个子对象
+3.深拷贝
+obj3=copy.deepcopy(obj)
+对象和子对象均被拷贝
+```
+##### 模块
+1. 导入
+```python
+import my_info
+print(my_info.name)
+my_info.info() 需要my_info.info()
+from my_info import name
+print(name)
+from my_info import *
+print(name)
+info() 可以直接调用info()
+import math,time,random
+导入多个模块时,如果有同名函数,后导入的会将前者覆盖
+```
+2. 包
+```python
+创建包会自动生成一个__init__.py文件
+import admin.my_admin as a #import 包名.模块名
+a.info()
+第一种导入方式,当包被导入时,__init__文件会被自动调用执行
+from admin import my_admin as b
+b.info()
+第二次导入时不执行__init__
+from 包名.模块名 import 函数/变量/*
+```
+3. 主程序运行
+```python
+if __name__ =='__main__':
+    print('good')
+    print('job')
+#别的文件调用此文件时,此内容不会被执行
+```
+##### random
+```python
+seed(x) #初始化给定的随机数种子,默认为系统当前的时间,如果随机数种子相同产生的随机数也相同
+    e.g:random.seed(10)
+random() #产生一个[0.0,1.0)之间的随即小数
+    e.g:print(random.random())
+randint(a,b) #产生一个[a,b]之间的整数
+randrange(m,n,k) #生成一个[m,n)之间步长为k的随机整数
+    e.g:random.randrange(1,10,3) #[1,10),1,4,7 
+uniform(a,b) #生成一个[a,b]之间的随即小数
+choice(seq) #从序列中随机选择一个元素
+shuffle(seq) #将序列中元素随机排列 ,返回打乱后的序列
+```
+##### time模块
+```python
+time() #获取当前时间戳
+localtime(sec) #获取指定时间戳对应的本地时间的strut_time对象
+ctime() #获取当前时间戳对应的易读字符串
+strftime() #格式化时间,结果为字符串
+strptime() #提取字符串的时间,结果为struct_time对象
+sleep(sec) #休眠sec秒
+
+e.g:
+import time
+now=time.time()
+print(now) #1709621211.91413
+obj=time.localtime()
+print(obj)
+#time.struct_time(tm_year=2024, tm_mon=3, tm_mday=5, tm_hour=14, tm_min=49, tm_sec=12, tm_wday=1, tm_yday=65, tm_isdst=0)
+print(obj.tm_wday) #从0开始,1表示星期二
+print(time.localtime(100))
+#time.struct_time(tm_year=1970, tm_mon=1, tm_mday=1, tm_hour=8, tm_min=1, tm_sec=40, tm_wday=3, tm_yday=1, tm_isdst=0)
+print(time.ctime())
+print(time.strftime('year:%Y_month:%m_date:%d',time.localtime())) #year:2024_month:03_date:05
+print(time.strptime('2049-10-1','%Y-%m-%d'))
+#time.struct_time(tm_year=2049, tm_mon=10, tm_mday=1, tm_hour=0, tm_min=0, tm_sec=0, tm_wday=4, tm_yday=274, tm_isdst=-1)
+time.sleep(5)
+print('我暂停了5秒')
+```
+|格式化字符串|日期/时间|取值范围|
+|---|---|---|
+|%Y|年份|0001~9999|
+|%m|月份|01~12|
+|%B|月名|January~December|
+|%d|日期|01~31|
+|%A|星期|Monday~Sunday|
+|%H|小时(24h)|00~23|
+|%I|小时(12h)|01~12|
+|%M|分钟|00~59|
+|%S|秒|00~59|
+##### datetime模块
+```py
+datetime.datatime #表示日期时间的类
+datetime.timedelta #表示时间间隔的类
+datetime.date #日期的类
+datetime.time #时间的类
+datetime.tzinfo #表示时区的类im
+
+import datetime
+now=datetime.datetime.now()
+print(now) #2024-03-05 15:11:30.758472
+
+#可以手动创建一个datetime对象
+dt2=datetime.datetime(2049,10,1)
+print(dt2) #2049-10-01 00:00:00
+
+#直接取出时分秒等用dt2.year/month/day/hour/minute/second
+print(dt2.year) #2049
+
+#可以直接比大小,越早越小
+
+#datetime类型与字符串进行转换 可以利用strftime和strptime方法
+now=datetime.datetime.now()
+strnow=now.strftime('%Y----%m----%d')  
+print(strnow) #2024----03----05
+
+#两个datetime对象相减会得到一个timedelta对象
+delta1=datetime.datetime(2028,10,1)-datetime.datetime(2028,5,1)
+print(delta1,type(delta1)) #153 days, 0:00:00 <class 'datetime.timedelta'> 
+
+#创建一个timedelta对象
+dalta2=datetime.timedelta(10,11)
+print(dalta2) #两个参数,第一个是天数,第二个是秒数
+```
+##### 第三方模块的安装
+1. win+R打开运行窗口
+2. 输入cmd(输入notepad为记事本)
+3. 安装
+    1. 输入pip install 模块名称
+    2. 或者输入
+        pip install 模块名  -i
+        https://pypi.douban.com/simple--trusted-host
+        pypi.douban.com
+4. 卸载 输入pip uninstall 模块名称
+5. 升级pip命令的语句
+    python -m pip install --upgrade pip
+
+##### requests模块(爬虫)
+1. 爬取文字
+```python
+import requests
+import re
+url='http://www.weather.com.cn/weather1d/101090101.shtml#input'
+#爬虫打开浏览器上的网页
+respond=requests.get(url) #打开浏览器并打开网址
+respond.encoding='utf-8' #设置编码格式以显示中文
+# print(respond.text) #respond响应对象，html页面
+city=re.findall('<span class="name">([\u4e00-\u9fa5]*)</span>',respond.text)
+weather=re.findall('<span class="weather">([\u4e00-\u9fa5]*)</span>',respond.text)
+temperature=re.findall('<span class="wd">(.*)</span>',respond.text)
+like=re.findall('<span class="zs">([\u4e00-\u9fa5]*)</span>',respond.text)
+'''
+<span class="name">三亚</span>
+<span class="weather">多云</span>
+<span class="wd">30/21℃</span>
+<span class="zs">适宜</span>
+'''
+print(city) #['景区', '三亚', '九寨沟', '大理', '张家界', '桂林', '青岛']
+print(weather) #['天气', '多云', '阴转小雨', '晴', '多云', '多云', '多云转阴']
+print(temperature) #['气温', '30/21℃', '8/2℃', '22/8℃', '12/7℃', '17/10℃', '9/-1℃']
+print(like) #['旅游指数', '适宜', '适宜', '适宜', '适宜', '适宜', '一般']
+lst=[]
+for a,b,c,d in zip(city,weather,temperature,like):
+    lst.append([a,b,c,d])
+print(lst)
+#[['景区', '天气', '气温', '旅游指数']
+#['三亚', '多云', '30/21℃', '适宜']
+#['九寨沟', '阴转小雨', '8/2℃', '适宜']
+#['大理', '晴', '22/8℃', '适宜']
+#['张家界', '多云', '12/7℃', '适宜']
+#['桂林', '多云', '17/10℃', '适宜']
+#['青岛', '多云转阴', '9/-1℃', '一般']]
 
 
+#终端中用CTRL+F可以查找内容
+```
+2. 爬取图片
+```python
+import requests
+a='https://www.baidu.com/img/24lianghui_3fa64faa4dd8496d4ab2a1d411a93dad.gif'
+respond=requests.get(a)
+with open('baidu.png','wb') as file: #保存到本地
+    file.write(respond.content)
+```
+ ![alt text](baidu.png)
 
+ ##### openpyxl模块(处理excel文件)
+ ```python
+load_workbook(filename) #打开已存在的表格,结果为工作簿对象
+creat_sheet(sheetname) #创建新的sheet
+workbook.sheetnames #工作簿对象的sheetnames属性,用于获取所有工作表的名称,结果为列表类型
+sheet.append(lst) #向工作表中添加一行数据,新数据接在工作表已有数据的后面
+workbook.save(excelname) #保存工作簿
+Workbook() #创建新的工作簿对象
+```
+1. 写入
+```python
+import weather
+import openpyxl
+str=weather.get_html() #发请求得响应结果
+lst=weather.parse_html(str) #解析数据
+workbook=openpyxl.Workbook() #创建一个新的excel工作簿
+sheet=workbook.create_sheet('weather') #在excel文件中创建工作表
+for item in lst:
+    sheet.append(item) #向工作表中添加数据
+workbook.save('python实现.xlsx')
+```
+2. 读取
+```python
+import openpyxl
 
+#打开工作表
+workbook=openpyxl.load_workbook('python实现.xlsx')
+#选择要操作的工作表
+sheet=workbook['weather']
+#表格数据时二位列表
+for hang in sheet.rows:
+    for item in hang:
+        print(item.value) #获取单元格内容
+```
 
-
-        
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
