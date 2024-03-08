@@ -1120,5 +1120,118 @@ for hang in sheet.rows:
     for item in hang:
         print(item.value) #获取单元格内容
 ```
+##### pdfplumber(PDF读取内容)----快速办公
+```python
+import pdfplumber
+#打开PDF文件
+with pdfplumber.open('复习.pdf') as pdf:
+    for i in pdf.pages:
+        print(i.extract_text()) #extract_text方法提取内容
+        print('-'*40,f'第{i.page_number}页','-'*40) 
+```
+##### Numpy模块(可以进行图像处理)----数据分析
 
- 
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+#读取图片
+n1=plt.imread('baidu.jpg')
+print(type(n1),n1)#n1是三维数组,最高维是图像的高,次一维是图像的宽,最低维为图像的[R,G,B]颜色
+plt.imshow(n1)
+
+#灰度公式
+n2=np.array([0.299,0.587,0.114,0])#创建数组
+#将数组n1(RGB)颜色值与数组n2(灰度公式固定值),进行点乘运算
+x=np.dot(n1,n2) 
+plt.imshow(x,cmap='gray')
+plt.show()
+```
+![alt text](.vscode/Figure_1.png)
+
+##### Pandas(数据分析,读取excel)与Matplotlib(数据可视化,方便绘制折线图等)模块
+##### PyEcharts模块(数据可视化图)
+##### PIL（图像处理）
+##### jieba模块（实现中文分词）
+##### pyinstaller模块（将源代码打包）
+##### 文件操作
+```python
+1.打开文件(创建)
+变量名=open(filename,mode,encoding) #'w'或'r'
+2.操作文件
+变量名.read()
+变量名.write(str)
+3.关闭文件
+变量名.close()
+```
+文件模式
+|打开模式|操作说明|
+|---|---|
+|r|只读,文件指针在文件开头,若文件不存在则异常|
+|rb|以只读模式打开二进制文件,如图片|
+|w|覆盖写模式,文件不存在则创建,文件存在则覆盖|
+|wb|覆盖写模式写入二进制数据,文件不存在则创建,文件存在则覆盖|
+|a|追加写模式|
+|+|w,r,a一同使用,同时读写|
+```python
+file.read(size) #从文件中读取size个字符或字节，如果没有指定参数，则读取全部内容
+file.readline(size) #读取一行，如果给定参数，就读取size个字符
+file.readlines() #从文件中读取所有内容，结果为列表类型
+file.write(s) #将字符串s写入文件
+file.writelines(lst) #将内容全部为字符串的列表lst写入文件
+file.seek(offset) #改变当前文件操作指针的位置，零为起始位置
+```
+with语句(可以自动关闭已打开的文件)
+```python
+with open() as file:
+    pass
+```
+##### json模块(处理高维数据)
+```python
+json.dumps(obj) #将python数据类型转换为json格式,编码过程
+json.loads(s) #将json格式字符串转成python数据类型,解码过程
+json.dump(obj,file) #与dumps()功能相同,将转换结果存储到文件file中
+json.load(file) #与loads()功能相同,从文件file中读入数据
+############################################################
+import json
+lst=[
+    {'name':'LiBai','age':1000,'score':99},
+    {'name':'DuFu','age':989,'score':98},
+    {'name':'BaiJuYi','age':999,'score':94}
+]
+s=json.dumps(lst,ensure_ascii=False,indent=4) #ensure_ascii正常显示中文,indent增加数据的缩进,美观
+print(s)
+
+```
+##### os模块
+```python
+import os
+# os.getcwd() 当前工作路径
+print('当前工作路径',os.getcwd()) #当前工作路径 E:\VScode\cpp
+#os.listdir() 查找所有的文件及目录
+print('当前路径下所有的目录及文件',os.listdir())
+print('指定路径下的目录及文件',os.listdir('E:/vscode')) #['.vscode', 'cpp', 'Microsoft VS Code', 'note.txt']
+#os.mkdir() 创建目录
+os.mkdir('学习') #若创建的文件夹存在,会报错
+#os.makedirs() 创建多级目录
+os.makedirs('./aa/bb/cc')
+#os.rmdir()只能删除空目录
+os.rmdir('./aa/bb/cc') #./表示当前路径
+os.removedirs('./aa/bb') #删除多级目录,只能是空目录
+#改变工作路径,移到别的目录下
+os.chdir('path')
+#os.walk()遍历目录树
+for dirs,dirlst,filelst in os.walk('e:/vscode'):
+    print(dirs)
+    print(dirlst)
+    print(filelst)
+    print('-'*40)
+#删除文件
+os.remove('./lll.txt')
+#重命名
+os.rename('./modela.py','./example.py')
+#获取文件信息
+info=os.stat('./aa.txt')
+print(info) #可以用date内置函数将时间戳转换成时间
+#启动路径下文件
+os.startfile('calc.exe') #打开计算器
+```
