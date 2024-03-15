@@ -1235,3 +1235,122 @@ print(info) #可以用date内置函数将时间戳转换成时间
 #启动路径下文件
 os.startfile('calc.exe') #打开计算器
 ```
+os.path
+```python
+import os.path
+#获取目录或文件的绝对路径
+print(os.path.abspath('./aa.txt')) #E:\VScode\cpp\aa.txt
+#判断文件或目录在磁盘上是否存在
+print(os.path.exists('aa.txt')) #True
+print(os.path.exists('aaa.txt')) #False
+#拼接路径，写到一块
+print(os.path.join('E:/vscode/cpp','aa.txt')) #E:/vscode/cp\aa.txt
+#分割文件名和后缀名
+print(os.path.splitext('aa.txt')) #('aa', '.txt')
+#提取文件名
+print(os.path.basename(r'E:\VScode\cpp\aa.txt')) #aa.txt,通过r使转义字符失效
+#提取路径
+print(os.path.dirname(r'E:\VScode\cpp\aa.txt')) #E:\VScode\cpp
+#判断一个路径是否为有效路径
+#判断是否为有效文件.isfile
+print(os.path.isdir(r'E:\VScode\cpp')) #只能是路径，不能是文件
+``` 
+##### Socket对象
+```python
+bind((ip,port)) #绑定IP地址和端口
+listen(N) #开始TCP监听,N表示操作系统挂起的最大连接数量,取值范围在1~5之间,一般为5
+accept() #被动接收TCP客户端连接,阻塞式
+connect((ip,port)) #主动初始化TCP服务器连接
+recv(size) #接收TCP数据,返回值为字符串类型,size表示要接收的最大数据量
+send(str) #发送TCP数据，返回值是要发送的字节数量
+sendall(str) #完整发送TCP数据,将str中的数据发送到连接的套接字,返回之前尝试发送所有数据,成功为None,失败会抛出异常
+recvfrom() #接收UDP数据,返回值为一个元组(data,address),data表示接收的数据,address表示发送数据的套接字地址
+sendto(data,(ip,port)) #发送UDP数据,返回值是发送的字节数
+close() #关闭套接字
+```
+1. TCP服务器端
+```python
+from socket import socket,AF_INET,SOCK_STREAM
+#AF_INET用于Internet直接的进程通信
+#SOCK_STREAM表示用TCP协议
+#1.创建socket对象
+server_socket=socket(AF_INET,SOCK_STREAM)
+#2.绑定IP地址和端口
+ip='127.0.0.1' #等同于localhouse,本机
+port=8888 #端口
+server_socket.bind((ip,port))
+#3.使用listen监听
+server_socket.listen(5)
+print('服务器已经启动')
+#4.等待客户端连接
+client_socket,client_address=server_socket.accept()
+#5.接收来自客户端的数据
+data=client_socket.recv(1024)
+print('客户端数据:',data.decode('utf-8')) #解码,客户端发送来的数据是utf-8的
+#6.关闭socket
+server_socket.close()
+```
+2. TCP客户端
+```py
+import socket
+#1.创建socket对象
+client_socket=socket.socket()
+#2.连接IP地址和主机端口
+ip='127.0.0.1'
+port=8888
+client_socket.connect((ip,port))
+print('与服务器连接成功')
+#3.发送数据
+client_socket.send('Hello'.encode('utf-8'))
+#4.关闭
+client_socket.close()
+print('发送完毕')
+#先启动服务器,在启动客户端
+```
+##### Process创建进程
+```python
+Process(group=None,target,name,args,kwards)
+group:表示分组,None即可
+target:表示子进程要执行的任务,支持函数名
+name:表示子进程名称
+args:表示调用函数的位置参数,以元组的方式传递
+kwards:表示调用函数的关键字参数,以字典的形式传递
+from multiprocessing import Process
+import os,time
+def test():
+    print(f'我是子进程,我的pid是{os.getpid()},我的父进程是:{os.getppid()}')
+    time.sleep(1)
+if __name__=='__main__':
+    print('主进程执行')
+    lst=[]
+    for i in range(5):
+        #创建子进程
+        p=Process(target=test)
+        #启动子进程
+        p.start()
+        lst.append(p)
+    for item in lst:
+        item.join() #阻塞主进程
+    print('主进程结束')
+```
+![alt text](image.png)
+![alt text](image-1.png)
+![alt text](image-2.png)
+![alt text](image-3.png)
+队列
+![alt text](image-4.png)
+线程
+![alt text](image-5.png)
+import threading
+from threading import Thread
+![alt text](image-6.png)
+进程之间数据不共享，用队列实现数据操作，线程之间数据共享
+```python
+Lock锁对象
+import Lock
+lock_obj=Lock()
+Lock_obj.acquire() #锁定共享数据,其他线程会等待
+lock_obj.release() #解锁
+```
+
+
